@@ -48,7 +48,9 @@
                 var name =  sheetData[i][5]
 
                 if (previosName && name === previosName && name.indexOf('TAPIRI') && name.indexOf('CAMAROTE') === -1) { 
-                    const nomes = ('NOME : ' + name + '           ///DATA : ' + sheetData[i][8])
+                    const nomes = ('NOME : ' + name + '           ///DATA : ' + sheetData[i][8]
+                    + '          ////LOCAL : ' + sheetData[i][9]
+                    + '          ////ACESSO : ' + sheetData[i][11])
                     nameRepeted.push(nomes)
                 }
                 previosName = name;
