@@ -11,15 +11,15 @@
 
     <script>
       document.getElementById('file-input').addEventListener('change', handleFileSelect);
-      function downloadArrayAsText(array, filename) {
-        var textContent = array.join('\n');
-        var element = document.createElement('a');
-        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(textContent));
-        element.setAttribute('download', filename);
-        element.style.display = 'none';
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
+
+      function downloadXlsxArrayAsText(ArrayListOfXlsx, XlsxName) {
+        var XlsxText = ArrayListOfXlsx.join('\n');
+        var DownloadButton = document.createElement('a');
+        DownloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(XlsxText) , 'download' , XlsxName);
+        DownloadButton.style.display = 'none';
+        document.body.appendChild(DownloadButton);
+        DownloadButton.click();
+        document.body.removeChild(DownloadButton);
     }
       function handleFileSelect(event) {
         var file = event.target.files[0];
@@ -53,9 +53,10 @@
                     + '          ////ACESSO : ' + sheetData[i][11])
                     nameRepeted.push(nomes)
                 }
+                
                 previosName = name;
             }
-            downloadArrayAsText(nameRepeted, 'nomes repititods')
+            downloadXlsxArrayAsText(nameRepeted , 'SERVIÇO 29-01')
           }
         };
         console.log(nameRepeted)
