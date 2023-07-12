@@ -14,59 +14,59 @@
       function downloadXlsxArrayAsText(ArrayListOfXlsx, XlsxName) {
         var XlsxText = ArrayListOfXlsx.join('\n');
         var DownloadButton = document.createElement('a');
-        DownloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(XlsxText) , 'download' , XlsxName);
+        DownloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(XlsxText), 'download', XlsxName);
         DownloadButton.style.display = 'none';
         document.body.appendChild(DownloadButton);
         DownloadButton.click();
         document.body.removeChild(DownloadButton);
-    }
-      function handleFileSelect(event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-        var nameRepeted = []
-        
-        
-        reader.onload = function (e) {
-          console.log(e.target.result)
-          var data = new Uint8Array(e.target.result);
-          var workbook = XLSX.read(data, { type: 'array' });
+      }
 
-          var worksheets = {};
-          workbook.SheetNames.forEach(function (sheetName) {
-            var worksheet = workbook.Sheets[sheetName];
-            worksheets[sheetName] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+      function handleFileSelect(event) {
+        UserFileSelect = event.target.files[0];
+        var reader = new FileReader();
+        var worksheets = {};
+
+        reader.onload = function (e) {
+          console.log(e.target.result);
+          var ConvertedXlsx = new Uint8Array(e.target.result);
+          var XlsxEnd = XLSX.read(ConvertedXlsx, { type: 'array' });
+
+          XlsxEnd.SheetNames.forEach(function (eachXlsx) {
+            var worksheet = XlsxEnd.Sheets[eachXlsx];
+            worksheets[eachXlsx] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
           });
 
           displayOutput(worksheets);
-          for (var sheetName in worksheets) {
-            console.log ('----' + sheetName + '-----');
-            var sheetData = worksheets[sheetName];
-            let nameCount = {}
-            let previosName = null
 
-            for (var i = 0; i < sheetData.length;i++){
-                if (sheetData[i][5]){
-                  const XlsxUserName =  sheetData[i][5]
-                  const WrittenTapiri = XlsxUserName.indexOf('TAPIRI')
-                  const WrittenCamarote = XlsxUserName.indexOf('CAMAROTE')
-                  if (previosName && XlsxUserName === previosName && WrittenTapiri && WrittenCamarote === -1) { 
-                      const nomes = (
-                      'NOME : ' + XlsxUserName 
-                      + '           ///DATA : ' + sheetData[i][8]
-                      + '           ///LOCAL : ' + sheetData[i][9]
-                      + '           ///ACESSO : ' + sheetData[i][11])
-                      nameRepeted.push(XlsxUserName)
-                      console.log(XlsxUserName)
-                  }
-                  
-                  previosName = XlsxUserName;
+          for (var sheetName in worksheets) {
+            console.log('----' + sheetName + '-----');
+            var sheetData = worksheets[sheetName];
+            let nameCount = {};
+            let previosName = null;
+            let namesRepeted = [];
+            for (var i = 0; i < sheetData.length; i++) {
+              if (sheetData[i][5]) {
+                const XlsxUserName = sheetData[i][5];
+                const WrittenTapiri = XlsxUserName.indexOf('TAPIRI');
+                const WrittenCamarote = XlsxUserName.indexOf('CAMAROTE');
+                if (previosName && XlsxUserName === previosName && WrittenTapiri && WrittenCamarote === -1) {
+                  const nomes =
+                    'NOME : ' + XlsxUserName +
+                    '           ///DATA : ' + sheetData[i][8] +
+                    '           ///LOCAL : ' + sheetData[i][9] +
+                    '           ///ACESSO : ' + sheetData[i][11];
+                  namesRepeted.push(XlsxUserName);
+                  console.log(XlsxUserName);
+                }
+
+                previosName = XlsxUserName;
               }
             }
             //downloadXlsxArrayAsText(nameRepeted , 'SERVIÇO 29-01')
           }
         };
-        console.log(nameRepeted)
-        reader.readAsArrayBuffer(file);
+
+        reader.readAsArrayBuffer(UserFileSelect);
       }
 
       function displayOutput(worksheets) {
